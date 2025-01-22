@@ -25,7 +25,7 @@ func Execute(repo service.EmployeeService) {
 	//Create
 
 	http.HandleFunc("/employees", func(w http.ResponseWriter, r *http.Request) {
-
+		fmt.Printf("Request Method: %s", r.Method)
 		switch r.Method {
 
 		case http.MethodPost:
@@ -33,6 +33,14 @@ func Execute(repo service.EmployeeService) {
 
 				repo.CreateEmployee(w, r)
 
+			}
+		case http.MethodPatch:
+			{
+				repo.UpdateEmployee(w, r)
+			}
+		case http.MethodGet:
+			{
+				repo.GetEmployee(w, r)
 			}
 		default:
 			{
@@ -45,9 +53,10 @@ func Execute(repo service.EmployeeService) {
 	fmt.Println("Starting Server")
 
 	http.ListenAndServe(":8080", nil)
-	/*
-		//Update
 
+	//Update
+
+	/*
 		err := repo.UpdateEmployee(models.Employee{
 			EmployeeID:   2,
 			EmployeeName: "Bhavani",
@@ -61,30 +70,30 @@ func Execute(repo service.EmployeeService) {
 			fmt.Println("Employee Updated Successfully ")
 		}
 
-		//GET
-		fmt.Println("**********Getting an Employee with ID 2***************")
-		val, err := repo.GetEmployee(2)
+			//GET
+			fmt.Println("**********Getting an Employee with ID 2***************")
+			val, err := repo.GetEmployee(2)
 
-		fmt.Println(val)
+			fmt.Println(val)
 
-		if err != nil {
-			repo.ListAllEmployees()
-			fmt.Println(err)
-		} else {
-			fmt.Println("Employee Updated Successfully ")
-		}
+			if err != nil {
+				repo.ListAllEmployees()
+				fmt.Println(err)
+			} else {
+				fmt.Println("Employee Updated Successfully ")
+			}
 
-		//Delete
+			//Delete
 
-		fmt.Println("**********Deleting an Employee with ID 2***************")
-		err = repo.DeleteEmployee(2)
+			fmt.Println("**********Deleting an Employee with ID 2***************")
+			err = repo.DeleteEmployee(2)
 
-		if err != nil {
-			repo.ListAllEmployees()
-			fmt.Println(err)
-		} else {
-			fmt.Println("Employee Updated Successfully ")
-		}
+			if err != nil {
+				repo.ListAllEmployees()
+				fmt.Println(err)
+			} else {
+				fmt.Println("Employee Updated Successfully ")
+			}
 	*/
 
 }
