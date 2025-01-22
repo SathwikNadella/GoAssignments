@@ -3,7 +3,6 @@ package repository
 import (
 	"employeeeDirectory/models"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -97,17 +96,32 @@ func (r *EmployeeRepo) UpdateEmployee(w http.ResponseWriter, req *http.Request) 
 	w.WriteHeader(http.StatusCreated)
 }
 
-func (r *EmployeeRepo) DeleteEmployee(id int) error {
+func (r *EmployeeRepo) DeleteEmployee(w http.ResponseWriter, req *http.Request) {
 
-	if _, exists := r.employees[id]; !exists {
-		fmt.Println("No Employee found to delete")
-		return errors.New("Not a new Employee")
+	queryValues := req.URL.Query()
+
+	id, err := strconv.Atoi(queryValues.Get("id"))
+	if err != nil {
+		http.Error(w, "Invalid Request body", http.StatusBadRequest)
+		return
 	}
 
-	delete(r.employees, id)
+	fmt.Println(id)
 
-	r.ListAllEmployees()
-	return nil
+	if val, exists := r.employees[id]; !exists {
+		fmt.Sprintln("No Employee Found for %v", id)
+		r.ListAllEmployees()
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte("No Employee Found"))
+		return
+	} else {
+		fmt.Println(val)
+		r.ListAllEmployees()
+		delete(r.employees, id)
+		r.ListAllEmployees()
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Deleted"))
+	}
 }
 
 func (r *EmployeeRepo) ListAllEmployees() {
