@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -54,9 +55,9 @@ func (r *EmployeeRepo) CreateEmployee(w http.ResponseWriter, req *http.Request) 
 
 func (r *EmployeeRepo) GetEmployee(w http.ResponseWriter, req *http.Request) {
 
-	queryValues := req.URL.Query()
+	vars := mux.Vars(req)
 
-	searchid, err := strconv.Atoi(queryValues.Get("id"))
+	searchid, err := strconv.Atoi(vars["id"])
 	if err != nil {
 		http.Error(w, "Invalid Request body", http.StatusBadRequest)
 		return
@@ -107,9 +108,9 @@ func (r *EmployeeRepo) UpdateEmployee(w http.ResponseWriter, req *http.Request) 
 
 func (r *EmployeeRepo) DeleteEmployee(w http.ResponseWriter, req *http.Request) {
 
-	queryValues := req.URL.Query()
+	vars := mux.Vars(req)
 
-	delid, err := strconv.Atoi(queryValues.Get("id"))
+	delid, err := strconv.Atoi(vars["id"])
 	if err != nil {
 		http.Error(w, "Invalid Request body", http.StatusBadRequest)
 		return

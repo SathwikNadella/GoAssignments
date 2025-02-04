@@ -3,9 +3,10 @@ package main
 import (
 	"employeeeDirectory/db"
 	"employeeeDirectory/repository"
-	"employeeeDirectory/service"
 	"fmt"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 /*
@@ -15,46 +16,16 @@ CRUD
 
 func main() {
 	db.Connect()
+
+	router := mux.NewRouter()
+
 	repo := repository.NewEmployeeRepo()
 
-	Execute(repo)
-
-}
-
-func Execute(repo service.EmployeeService) {
-
-	http.HandleFunc("/employees", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Printf("Request Method: %s", r.Method)
-		switch r.Method {
-
-		case http.MethodPost: //Create
-			{
-
-				repo.CreateEmployee(w, r)
-
-			}
-		case http.MethodPatch: //Update
-			{
-				repo.UpdateEmployee(w, r)
-			}
-		case http.MethodGet: //Read
-			{
-				repo.GetEmployee(w, r)
-			}
-		case http.MethodDelete: //Delete
-			{
-				repo.DeleteEmployee(w, r)
-			}
-		default:
-			{
-				http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-			}
-
-		}
-	})
+	router.HandleFunc("/employees", repo.CreateEmployee).Methods(http.MethodPost)
+	router.HandleFunc("/employees/{id}", repo.GetEmployee).Methods(http.MethodGet)
+	router.HandleFunc("/employees", repo.UpdateEmployee).Methods(http.MethodPatch)
+	router.HandleFunc("/employees/{id}", repo.DeleteEmployee).Methods(http.MethodDelete)
 
 	fmt.Println("Starting Server")
-
-	http.ListenAndServe(":8080", nil)
-
+	http.ListenAndServe(":8080", router)
 }
