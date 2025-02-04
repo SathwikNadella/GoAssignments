@@ -1,6 +1,7 @@
 package main
 
 import (
+	"employeeeDirectory/db"
 	"employeeeDirectory/repository"
 	"employeeeDirectory/service"
 	"fmt"
@@ -13,7 +14,7 @@ CRUD
 */
 
 func main() {
-
+	db.Connect()
 	repo := repository.NewEmployeeRepo()
 
 	Execute(repo)
